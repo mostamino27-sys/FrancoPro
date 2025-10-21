@@ -3,221 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrancoPro - Plateforme d'Apprentissage</title>
-    <meta name="description" content="Plateforme interactive pour l'enseignement de la grammaire française">
+    <title>FrancoPro - Grammaire Française</title>
+    <meta name="description" content="Plateforme interactive pour maîtriser la grammaire française">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
     <style>
-        :root {
-            --primary: #1e40af;
-            --primary-dark: #1e3a8a;
-            --bg: #ffffff;
-            --surface: #f8fafc;
-            --text: #0f172a;
-            --text-secondary: #475569;
-            --border: #e2e8f0;
-            --success: #10b981;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        [data-theme="dark"] {
-            --primary: #3b82f6;
+
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
             --bg: #0f172a;
             --surface: #1e293b;
+            --card: #334155;
             --text: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border: #334155;
+            --text-secondary: #94a3b8;
+            --border: #475569;
+            --success: #10b981;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
-            transition: all 0.3s;
+            min-height: 100vh;
         }
-        .header { 
-            background: var(--surface); 
-            border-bottom: 2px solid var(--border); 
-            padding: 1rem; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
+
+        .header {
+            background: var(--surface);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
-        .nav { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .logo-title { 
-            font-size: 1.5rem; 
-            font-weight: 700; 
-            color: var(--primary); 
-        }
-        .logo-subtitle { 
-            font-size: 0.75rem; 
-            color: var(--text-secondary); 
-        }
-        .nav-buttons {
+
+        .nav {
+            max-width: 1400px;
+            margin: 0 auto;
             display: flex;
-            gap: 0.5rem;
+            justify-content: space-between;
             align-items: center;
         }
-        .theme-toggle, .btn-primary { 
-            padding: 0.6rem 1rem; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            border: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-size: 0.9rem;
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .theme-toggle {
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            font-size: 1rem;
             background: var(--surface);
             border: 2px solid var(--border);
+            border-radius: 12px;
             color: var(--text);
+            transition: all 0.3s;
         }
-        .btn-primary { 
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
             background: var(--primary);
             color: white;
-            text-decoration: none;
-            display: inline-block;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        .btn-primary:active { 
-            transform: scale(0.95); 
+
+        .search-btn:hover {
+            background: var(--primary-dark);
         }
-        .hero { 
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
-            color: white; 
-            padding: 2rem 1rem; 
-            text-align: center; 
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
         }
-        .hero h1 { 
-            font-size: clamp(1.5rem, 4vw, 2.5rem); 
-            margin-bottom: 0.5rem; 
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
         }
-        .hero p {
-            font-size: clamp(0.9rem, 2vw, 1.1rem);
-            opacity: 0.95;
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .card-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--text);
+        }
+
+        .chat-messages {
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
             margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
         }
-        .university-badge { 
-            background: rgba(255, 255, 255, 0.2); 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 8px; 
-            display: inline-block; 
+
+        .message.user {
+            background: var(--primary);
+            color: white;
+            margin-left: 20%;
         }
-        .section { 
-            max-width: 1200px; 
-            margin: 2rem auto; 
-            padding: 0 1rem; 
+
+        .message.assistant {
+            background: var(--card);
+            border: 1px solid var(--border);
+            margin-right: 20%;
         }
-        .chat-container { 
-            background: var(--surface); 
-            border-radius: 12px; 
-            padding: 1rem; 
-            margin-top: 1rem; 
-        }
-        .chat-messages { 
-            max-height: 400px; 
-            overflow-y: auto; 
-            margin-bottom: 1rem; 
-            padding: 1rem; 
-            background: var(--bg); 
-            border-radius: 8px; 
-        }
-        .message { 
-            margin-bottom: 1rem; 
-            padding: 1rem; 
-            border-radius: 8px; 
-            word-wrap: break-word;
-        }
-        .message.user { 
-            background: var(--primary); 
-            color: white; 
-            margin-left: 10%;
-        }
-        .message.assistant { 
-            background: var(--surface); 
-            border: 2px solid var(--border); 
-            margin-right: 10%;
-        }
+
         .message strong {
             display: block;
             margin-bottom: 0.5rem;
             font-size: 0.9rem;
         }
-        .message-actions { 
-            display: flex; 
-            gap: 0.5rem; 
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
             margin-top: 0.75rem;
-            flex-wrap: wrap;
         }
-        .action-btn { 
-            background: var(--bg); 
-            border: 1px solid var(--border); 
-            padding: 0.4rem 0.8rem; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.8rem;
+
+        .action-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text);
             transition: all 0.2s;
         }
-        .action-btn:active { 
-            transform: scale(0.95); 
+
+        .action-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
         }
-        .chat-input-container { 
-            display: flex; 
-            gap: 0.5rem; 
+
+        .chat-input-container {
+            display: flex;
+            gap: 1rem;
         }
-        .chat-input { 
-            flex: 1; 
-            padding: 0.75rem; 
-            border: 2px solid var(--border); 
-            border-radius: 8px; 
-            background: var(--bg); 
-            color: var(--text); 
-            font-size: 1rem; 
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
             resize: none;
             min-height: 60px;
             font-family: inherit;
         }
-        .chat-input:focus { 
-            outline: none; 
-            border-color: var(--primary); 
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
-        .loading { 
-            display: none; 
-            text-align: center; 
+
+        .loading {
+            display: none;
+            text-align: center;
             padding: 1rem;
             color: var(--text-secondary);
         }
-        .loading.active { display: block; }
-        footer { 
-            background: var(--surface); 
-            border-top: 2px solid var(--border); 
-            padding: 2rem 1rem; 
-            margin-top: 2rem; 
+
+        .loading.active {
+            display: block;
+        }
+
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 2rem;
             text-align: center;
+            margin-top: 4rem;
         }
-        .toast { 
-            position: fixed; 
-            bottom: 2rem; 
-            left: 50%; 
-            transform: translateX(-50%) translateY(100px); 
-            background: var(--success); 
-            color: white; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 8px; 
-            z-index: 1001; 
-            transition: transform 0.3s; 
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--success);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            z-index: 1001;
+            transition: transform 0.3s;
         }
-        .toast.active { 
-            transform: translateX(-50%) translateY(0); 
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
         }
+
         @media (max-width: 768px) {
-            .logo-subtitle { display: none; }
-            .message.user, .message.assistant { 
-                margin: 0 0 1rem 0; 
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .message.user, .message.assistant {
+                margin: 0 0 1rem 0;
             }
         }
     </style>
@@ -226,103 +365,194 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <div class="logo-title">FrancoPro</div>
-                <div class="logo-subtitle">Sciences du Langage</div>
-            </div>
-            <div class="nav-buttons">
-                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
-                <a href="#platform" class="btn-primary">Tester</a>
+                <span class="logo-icon">📚</span>
+                FrancoPro
             </div>
         </nav>
     </header>
 
-    <section class="hero">
-        <div>
-            <h1>Plateforme d'Apprentissage de la Grammaire Française</h1>
-            <p>Technologies avancées pour l'enseignement aux apprenants arabophones</p>
-            <div class="university-badge">
-                <strong>🎓 Université de Mostaganem</strong><br>
-                Master en Sciences du Langage
+    <div class="hero">
+        <h1>Maîtrisez la Grammaire Française</h1>
+        <p>Plateforme interactive pour l'apprentissage de la grammaire française</p>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Entrez le sujet grammatical que vous souhaitez apprendre...">
+            <button class="search-btn" onclick="searchTopic()">🔍</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2 class="section-title">📖 Leçons de Grammaire</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="openLesson('temps')">
+                <div class="card-icon">⏰</div>
+                <div class="card-title">Les Temps Verbaux</div>
+                <div class="card-desc">Formation et utilisation des temps</div>
+            </div>
+
+            <div class="card" onclick="openLesson('articles')">
+                <div class="card-icon">📝</div>
+                <div class="card-title">Les Articles</div>
+                <div class="card-desc">Définis et indéfinis</div>
+            </div>
+
+            <div class="card" onclick="openLesson('adjectifs')">
+                <div class="card-icon">✨</div>
+                <div class="card-title">Les Adjectifs</div>
+                <div class="card-desc">Accord et place dans la phrase</div>
+            </div>
+
+            <div class="card" onclick="openLesson('pronoms')">
+                <div class="card-icon">👤</div>
+                <div class="card-title">Les Pronoms</div>
+                <div class="card-desc">Personnels, relatifs, possessifs</div>
+            </div>
+
+            <div class="card" onclick="openLesson('conjugaison')">
+                <div class="card-icon">🔄</div>
+                <div class="card-title">Conjugaison</div>
+                <div class="card-desc">Conjuguez n'importe quel verbe français</div>
+            </div>
+
+            <div class="card" onclick="openLesson('accords')">
+                <div class="card-icon">✅</div>
+                <div class="card-title">Les Accords</div>
+                <div class="card-desc">Règles d'accord des participes</div>
             </div>
         </div>
-    </section>
 
-    <main>
-        <section class="section" id="platform">
-            <h2 style="text-align: center; color: var(--primary); margin-bottom: 0.5rem;">Assistant Pédagogique</h2>
-            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">Posez vos questions sur la grammaire française</p>
-            
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message assistant">
-                        <strong>🎓 Assistant</strong>
-                        <p>Bonjour! Je suis votre assistant pédagogique.</p>
-                        <p style="margin-top: 0.5rem;"><strong>Vous pouvez:</strong></p>
-                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem; font-size: 0.9rem;">
-                            <li>Demander des leçons grammaticales</li>
-                            <li>Obtenir des exercices (A1-C2)</li>
-                            <li>Poser des questions spécifiques</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="loading" id="loading">⏳ Préparation...</div>
-                <div class="chat-input-container">
-                    <textarea class="chat-input" id="chatInput" placeholder="Votre question..." rows="2"></textarea>
-                    <button class="btn-primary" id="sendBtn" onclick="sendMessage()" style="padding: 0.75rem 1.5rem;">Envoyer</button>
-                </div>
+        <h2 class="section-title">🎯 Outils d'Apprentissage</h2>
+        <div class="cards-grid">
+            <div class="card" onclick="openTool('quiz')">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Quiz Interactif</div>
+                <div class="card-desc">Testez vos connaissances avec 10 questions</div>
             </div>
-        </section>
-    </main>
+
+            <div class="card" onclick="openTool('stories')">
+                <div class="card-icon">📖</div>
+                <div class="card-title">Histoires</div>
+                <div class="card-desc">Lisez des histoires adaptées à votre niveau</div>
+            </div>
+
+            <div class="card" onclick="openTool('correction')">
+                <div class="card-icon">✏️</div>
+                <div class="card-title">Correcteur</div>
+                <div class="card-desc">Écrivez une phrase et obtenez une correction</div>
+            </div>
+
+            <div class="card" onclick="openTool('exercises')">
+                <div class="card-icon">📋</div>
+                <div class="card-title">Exercices</div>
+                <div class="card-desc">Générez des exercices personnalisés</div>
+            </div>
+
+            <div class="card" onclick="openTool('chat')">
+                <div class="card-icon">💬</div>
+                <div class="card-title">Assistant</div>
+                <div class="card-desc">Posez vos questions sur la grammaire</div>
+            </div>
+        </div>
+    </div>
 
     <footer>
-        <p style="font-size: 1rem; margin-bottom: 0.5rem;"><strong>FrancoPro</strong></p>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Université de Mostaganem</p>
-        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Année 2024-2025</p>
-        <div style="padding-top: 1rem; border-top: 2px solid var(--border); color: var(--text-secondary);">
-            <p style="font-size: 0.85rem;">&copy; 2025 FrancoPro</p>
-            <p style="font-size: 0.85rem; margin-top: 0.3rem;">Développé par <strong>BETTAHAR Abdelkrim</strong></p>
-        </div>
+        <p style="margin-bottom: 0.5rem;"><strong>FrancoPro</strong> - Université de Mostaganem</p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Année 2024-2025</p>
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 1rem;">Développé par <strong>BETTAHAR Abdelkrim</strong></p>
     </footer>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Assistant Pédagogique</h2>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="loading" id="loading">⏳ Préparation...</div>
+            <div class="chat-input-container">
+                <textarea class="chat-input" id="chatInput" placeholder="Votre message..." rows="2"></textarea>
+                <button class="search-btn" onclick="sendMessage()">Envoyer</button>
+            </div>
+        </div>
+    </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            const toggle = document.getElementById('themeToggle');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                toggle.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                toggle.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-
-        // Load saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
-            document.getElementById('themeToggle').textContent = '☀️';
-        }
-
-        // Chat functionality
-        const chatInput = document.getElementById('chatInput');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modalTitle');
         const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
         const loading = document.getElementById('loading');
+        let currentContext = '';
+
+        function openLesson(topic) {
+            const titles = {
+                temps: 'Les Temps Verbaux',
+                articles: 'Les Articles',
+                adjectifs: 'Les Adjectifs',
+                pronoms: 'Les Pronoms',
+                conjugaison: 'Conjugaison',
+                accords: 'Les Accords'
+            };
+            
+            currentContext = topic;
+            modalTitle.textContent = titles[topic] || 'Leçon';
+            chatMessages.innerHTML = `
+                <div class="message assistant">
+                    <strong>🎓 Assistant</strong>
+                    <p>Demandez-moi ce que vous voulez apprendre sur ${titles[topic]}!</p>
+                </div>
+            `;
+            modal.classList.add('active');
+            chatInput.focus();
+        }
+
+        function openTool(tool) {
+            const titles = {
+                quiz: 'Quiz Interactif',
+                stories: 'Histoires',
+                correction: 'Correcteur',
+                exercises: 'Exercices',
+                chat: 'Assistant Pédagogique'
+            };
+            
+            currentContext = tool;
+            modalTitle.textContent = titles[tool];
+            chatMessages.innerHTML = `
+                <div class="message assistant">
+                    <strong>🎓 Assistant</strong>
+                    <p>Comment puis-je vous aider?</p>
+                </div>
+            `;
+            modal.classList.add('active');
+            chatInput.focus();
+        }
+
+        function searchTopic() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            
+            currentContext = 'search';
+            modalTitle.textContent = 'Recherche';
+            chatMessages.innerHTML = '';
+            modal.classList.add('active');
+            chatInput.value = query;
+            sendMessage();
+            document.getElementById('searchInput').value = '';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
 
         async function sendMessage() {
-            const userMessage = chatInput.value.trim();
-            if (!userMessage) return;
+            const message = chatInput.value.trim();
+            if (!message) return;
 
-            // Add user message
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
-            userMsg.innerHTML = `<strong>Vous</strong><p>${escapeHtml(userMessage)}</p>`;
+            userMsg.innerHTML = `<strong>Vous</strong><p>${escapeHtml(message)}</p>`;
             chatMessages.appendChild(userMsg);
             chatInput.value = '';
 
@@ -333,17 +563,14 @@
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: userMessage })
+                    body: JSON.stringify({ message })
                 });
 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+                if (!response.ok) throw new Error('Network error');
 
                 const data = await response.json();
                 loading.classList.remove('active');
 
-                // Add assistant message
                 const assistantMsg = document.createElement('div');
                 assistantMsg.className = 'message assistant';
                 const formatted = data.response.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
@@ -361,12 +588,11 @@
                 loading.classList.remove('active');
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'message assistant';
-                errorMsg.innerHTML = `<strong>❌ Erreur</strong><p>Impossible de se connecter. Vérifiez votre connexion.</p>`;
+                errorMsg.innerHTML = `<strong>❌ Erreur</strong><p>Impossible de se connecter au serveur.</p>`;
                 chatMessages.appendChild(errorMsg);
             }
         }
 
-        // Enter key support
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -394,7 +620,7 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFontSize(14);
-            doc.text('FrancoPro - Leçon', 20, 20);
+            doc.text('FrancoPro', 20, 20);
             doc.setFontSize(10);
             doc.text('BETTAHAR Abdelkrim', 20, 28);
             doc.setFontSize(11);
