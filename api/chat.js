@@ -1,13 +1,9 @@
-const fetch = require('node-fetch');
-
 module.exports = async (req, res) => {
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 
   if (req.method === 'OPTIONS') {
     res.status(200).end();
@@ -28,8 +24,11 @@ module.exports = async (req, res) => {
     const API_KEY = process.env.OPENROUTER_API_KEY;
 
     if (!API_KEY) {
-      return res.status(500).json({ error: 'API key not configured' });
+      console.error('API KEY NOT FOUND');
+      return res.status(500).json({ error: 'Configuration error - API key missing' });
     }
+
+    console.log('Sending request to OpenRouter...');
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -44,30 +43,7 @@ module.exports = async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: `Tu es un expert en grammaire française et en enseignement des langues. Tu travailles pour FrancoPro, une plateforme d'apprentissage du français. 
-
-Ton rôle est d'aider les utilisateurs à comprendre la grammaire française de manière claire et pédagogique. 
-
-Règles importantes:
-- Réponds toujours en français
-- Donne des explications claires avec des exemples concrets
-- Utilise un ton professionnel mais accessible
-- Structure tes réponses avec des paragraphes courts
-- Fournis des exemples pratiques pour chaque règle
-- Si l'utilisateur fait une erreur, corrige-la gentiment
-- Adapte ton niveau de langue selon la question
-- Ne mentionne jamais que tu es un système automatisé
-- Présente-toi comme un formateur de FrancoPro si demandé
-
-Domaines d'expertise:
-- Grammaire française (tous niveaux A1-C2)
-- Conjugaison
-- Orthographe
-- Syntaxe
-- Pronoms
-- Temps verbaux
-- Accords
-- Voix passive/active`
+            content: 'Tu es un expert en grammaire française. Réponds toujours en français de manière claire et pédagogique. Donne des exemples concrets.'
           },
           {
             role: 'user',
@@ -75,18 +51,23 @@ Domaines d'expertise:
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 800
       })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('API error:', data);
+      console.error('OpenRouter Error:', data);
       return res.status(response.status).json({ 
-        error: 'Error from service',
+        error: 'Service error',
         details: data 
       });
+    }
+
+    if (!data.choices || !data.choices[0]) {
+      console.error('Invalid response format:', data);
+      return res.status(500).json({ error: 'Invalid response from service' });
     }
 
     const aiResponse = data.choices[0].message.content;
