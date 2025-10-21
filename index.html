@@ -4,15 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FrancoPro - Grammaire Française</title>
-    <meta name="description" content="Plateforme interactive pour maîtriser la grammaire française">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary: #2563eb;
             --primary-dark: #1e40af;
@@ -23,16 +17,15 @@
             --text-secondary: #94a3b8;
             --border: #475569;
             --success: #10b981;
+            --error: #ef4444;
         }
-
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
         }
-
         .header {
             background: var(--surface);
             padding: 1.5rem 2rem;
@@ -40,9 +33,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
         }
-
         .nav {
             max-width: 1400px;
             margin: 0 auto;
@@ -50,7 +41,6 @@
             justify-content: space-between;
             align-items: center;
         }
-
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
@@ -59,56 +49,42 @@
             align-items: center;
             gap: 0.5rem;
         }
-
-        .logo-icon {
-            font-size: 2rem;
-        }
-
         .hero {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 3rem 2rem;
             max-width: 800px;
             margin: 0 auto;
         }
-
         .hero h1 {
             font-size: clamp(2rem, 5vw, 3rem);
             margin-bottom: 1rem;
             background: linear-gradient(135deg, var(--primary), #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
         }
-
         .hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
         }
-
         .search-container {
             max-width: 600px;
             margin: 0 auto 3rem;
             position: relative;
         }
-
         .search-input {
             width: 100%;
-            padding: 1.25rem 3.5rem 1.25rem 1.5rem;
+            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
             font-size: 1rem;
             background: var(--surface);
             border: 2px solid var(--border);
             border-radius: 12px;
             color: var(--text);
-            transition: all 0.3s;
         }
-
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
-
         .search-btn {
             position: absolute;
             right: 0.5rem;
@@ -121,32 +97,23 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.3s;
         }
-
-        .search-btn:hover {
-            background: var(--primary-dark);
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem 4rem;
         }
-
         .section-title {
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
             color: var(--text);
         }
-
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-bottom: 3rem;
         }
-
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -154,32 +121,16 @@
             padding: 2rem;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
         }
-
         .card:hover {
             border-color: var(--primary);
             transform: translateY(-4px);
             box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
         }
-
-        .card-icon {
-            font-size: 2.5rem;
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .card-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
+        .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .card-desc { color: var(--text-secondary); font-size: 0.95rem; }
+        
         .modal {
             display: none;
             position: fixed;
@@ -187,145 +138,153 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             overflow-y: auto;
-            backdrop-filter: blur(5px);
         }
-
         .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
         }
-
         .modal-content {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
             padding: 2rem;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
-
         .modal-title {
             font-size: 1.5rem;
             color: var(--text);
         }
-
         .close-btn {
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             color: var(--text-secondary);
             cursor: pointer;
             padding: 0.5rem;
-            transition: color 0.3s;
         }
-
-        .close-btn:hover {
-            color: var(--text);
-        }
-
-        .chat-messages {
+        .close-btn:hover { color: var(--text); }
+        
+        .response-area {
             background: var(--bg);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 2rem;
             margin-bottom: 1.5rem;
-            max-height: 400px;
-            overflow-y: auto;
+            min-height: 200px;
         }
-
-        .message {
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
+        .response-content {
+            color: var(--text);
+            line-height: 1.8;
         }
-
-        .message.user {
-            background: var(--primary);
-            color: white;
-            margin-left: 20%;
+        .response-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
-
-        .message.assistant {
+        .action-btn {
             background: var(--card);
             border: 1px solid var(--border);
-            margin-right: 20%;
-        }
-
-        .message strong {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .message-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-        }
-
-        .action-btn {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text);
-            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
         .action-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
         }
-
-        .chat-input-container {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 1rem;
+        
+        .input-section {
             background: var(--bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+        .input-label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--surface);
             border: 2px solid var(--border);
             border-radius: 8px;
             color: var(--text);
             font-size: 1rem;
-            resize: none;
-            min-height: 60px;
+            resize: vertical;
+            min-height: 100px;
             font-family: inherit;
         }
-
-        .chat-input:focus {
+        .text-input:focus {
             outline: none;
             border-color: var(--primary);
         }
-
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-top: 1rem;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background: var(--primary-dark);
+        }
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
         .loading {
             display: none;
             text-align: center;
-            padding: 1rem;
+            padding: 2rem;
             color: var(--text-secondary);
         }
-
-        .loading.active {
-            display: block;
+        .loading.active { display: block; }
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .error-message {
+            background: var(--error);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
         footer {
             background: var(--surface);
             border-top: 1px solid var(--border);
@@ -333,7 +292,6 @@
             text-align: center;
             margin-top: 4rem;
         }
-
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -346,18 +304,11 @@
             z-index: 1001;
             transition: transform 0.3s;
         }
-
-        .toast.active {
-            transform: translateX(-50%) translateY(0);
-        }
-
+        .toast.active { transform: translateX(-50%) translateY(0); }
+        
         @media (max-width: 768px) {
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-            .message.user, .message.assistant {
-                margin: 0 0 1rem 0;
-            }
+            .cards-grid { grid-template-columns: 1fr; }
+            .modal-content { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -365,7 +316,7 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <span class="logo-icon">📚</span>
+                <span style="font-size: 2rem;">📚</span>
                 FrancoPro
             </div>
         </nav>
@@ -373,10 +324,10 @@
 
     <div class="hero">
         <h1>Maîtrisez la Grammaire Française</h1>
-        <p>Plateforme interactive pour l'apprentissage de la grammaire française</p>
+        <p>Plateforme interactive pour l'apprentissage personnalisé</p>
         
         <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="Entrez le sujet grammatical que vous souhaitez apprendre...">
+            <input type="text" class="search-input" id="searchInput" placeholder="Recherchez un sujet grammatical...">
             <button class="search-btn" onclick="searchTopic()">🔍</button>
         </div>
     </div>
@@ -387,70 +338,46 @@
             <div class="card" onclick="openLesson('temps')">
                 <div class="card-icon">⏰</div>
                 <div class="card-title">Les Temps Verbaux</div>
-                <div class="card-desc">Formation et utilisation des temps</div>
+                <div class="card-desc">Apprenez tous les temps</div>
             </div>
-
-            <div class="card" onclick="openLesson('articles')">
-                <div class="card-icon">📝</div>
-                <div class="card-title">Les Articles</div>
-                <div class="card-desc">Définis et indéfinis</div>
+            <div class="card" onclick="openLesson('conjugaison')">
+                <div class="card-icon">🔄</div>
+                <div class="card-title">Conjugaison</div>
+                <div class="card-desc">Conjuguez n'importe quel verbe</div>
             </div>
-
-            <div class="card" onclick="openLesson('adjectifs')">
-                <div class="card-icon">✨</div>
-                <div class="card-title">Les Adjectifs</div>
-                <div class="card-desc">Accord et place dans la phrase</div>
-            </div>
-
             <div class="card" onclick="openLesson('pronoms')">
                 <div class="card-icon">👤</div>
                 <div class="card-title">Les Pronoms</div>
                 <div class="card-desc">Personnels, relatifs, possessifs</div>
             </div>
-
-            <div class="card" onclick="openLesson('conjugaison')">
-                <div class="card-icon">🔄</div>
-                <div class="card-title">Conjugaison</div>
-                <div class="card-desc">Conjuguez n'importe quel verbe français</div>
-            </div>
-
-            <div class="card" onclick="openLesson('accords')">
-                <div class="card-icon">✅</div>
-                <div class="card-title">Les Accords</div>
-                <div class="card-desc">Règles d'accord des participes</div>
+            <div class="card" onclick="openLesson('articles')">
+                <div class="card-icon">📝</div>
+                <div class="card-title">Les Articles</div>
+                <div class="card-desc">Définis et indéfinis</div>
             </div>
         </div>
 
-        <h2 class="section-title">🎯 Outils d'Apprentissage</h2>
+        <h2 class="section-title">🎯 Outils Pratiques</h2>
         <div class="cards-grid">
-            <div class="card" onclick="openTool('quiz')">
-                <div class="card-icon">📊</div>
-                <div class="card-title">Quiz Interactif</div>
-                <div class="card-desc">Testez vos connaissances avec 10 questions</div>
+            <div class="card" onclick="openTool('exercices')">
+                <div class="card-icon">📋</div>
+                <div class="card-title">Exercices</div>
+                <div class="card-desc">Entraînez-vous avec des exercices</div>
             </div>
-
-            <div class="card" onclick="openTool('stories')">
-                <div class="card-icon">📖</div>
-                <div class="card-title">Histoires</div>
-                <div class="card-desc">Lisez des histoires adaptées à votre niveau</div>
-            </div>
-
             <div class="card" onclick="openTool('correction')">
                 <div class="card-icon">✏️</div>
                 <div class="card-title">Correcteur</div>
-                <div class="card-desc">Écrivez une phrase et obtenez une correction</div>
+                <div class="card-desc">Corrigez vos phrases</div>
             </div>
-
-            <div class="card" onclick="openTool('exercises')">
-                <div class="card-icon">📋</div>
-                <div class="card-title">Exercices</div>
-                <div class="card-desc">Générez des exercices personnalisés</div>
+            <div class="card" onclick="openTool('quiz')">
+                <div class="card-icon">📊</div>
+                <div class="card-title">Quiz</div>
+                <div class="card-desc">Testez vos connaissances</div>
             </div>
-
             <div class="card" onclick="openTool('chat')">
                 <div class="card-icon">💬</div>
                 <div class="card-title">Assistant</div>
-                <div class="card-desc">Posez vos questions sur la grammaire</div>
+                <div class="card-desc">Posez vos questions</div>
             </div>
         </div>
     </div>
@@ -464,14 +391,30 @@
     <div class="modal" id="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Assistant Pédagogique</h2>
+                <h2 class="modal-title" id="modalTitle">Chargement...</h2>
                 <button class="close-btn" onclick="closeModal()">✕</button>
             </div>
-            <div class="chat-messages" id="chatMessages"></div>
-            <div class="loading" id="loading">⏳ Préparation...</div>
-            <div class="chat-input-container">
-                <textarea class="chat-input" id="chatInput" placeholder="Votre message..." rows="2"></textarea>
-                <button class="search-btn" onclick="sendMessage()">Envoyer</button>
+            
+            <div id="errorContainer"></div>
+            
+            <div class="response-area" id="responseArea" style="display: none;">
+                <div class="response-content" id="responseContent"></div>
+                <div class="response-actions">
+                    <button class="action-btn" onclick="copyResponse()">📋 Copier</button>
+                    <button class="action-btn" onclick="downloadPDF()">📄 PDF</button>
+                    <button class="action-btn" onclick="clearResponse()">🔄 Nouveau</button>
+                </div>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p style="margin-top: 1rem;">Préparation de la réponse...</p>
+            </div>
+            
+            <div class="input-section" id="inputSection">
+                <label class="input-label" id="inputLabel">Votre question:</label>
+                <textarea class="text-input" id="textInput" placeholder="Écrivez ici..."></textarea>
+                <button class="submit-btn" id="submitBtn" onclick="submitRequest()">Envoyer</button>
             </div>
         </div>
     </div>
@@ -481,52 +424,70 @@
     <script>
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modalTitle');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
+        const inputSection = document.getElementById('inputSection');
+        const responseArea = document.getElementById('responseArea');
         const loading = document.getElementById('loading');
+        const textInput = document.getElementById('textInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const responseContent = document.getElementById('responseContent');
+        const inputLabel = document.getElementById('inputLabel');
+        const errorContainer = document.getElementById('errorContainer');
+        
         let currentContext = '';
+        let currentResponse = '';
 
         function openLesson(topic) {
             const titles = {
                 temps: 'Les Temps Verbaux',
-                articles: 'Les Articles',
-                adjectifs: 'Les Adjectifs',
-                pronoms: 'Les Pronoms',
                 conjugaison: 'Conjugaison',
-                accords: 'Les Accords'
+                pronoms: 'Les Pronoms',
+                articles: 'Les Articles'
+            };
+            const prompts = {
+                temps: 'Explique-moi les temps verbaux en français',
+                conjugaison: 'Quel verbe veux-tu conjuguer?',
+                pronoms: 'Explique-moi les pronoms français',
+                articles: 'Explique-moi les articles en français'
             };
             
             currentContext = topic;
-            modalTitle.textContent = titles[topic] || 'Leçon';
-            chatMessages.innerHTML = `
-                <div class="message assistant">
-                    <strong>🎓 Assistant</strong>
-                    <p>Demandez-moi ce que vous voulez apprendre sur ${titles[topic]}!</p>
-                </div>
-            `;
+            modalTitle.textContent = titles[topic];
+            inputLabel.textContent = prompts[topic];
+            textInput.placeholder = 'Ex: le verbe être au présent';
+            resetModal();
             modal.classList.add('active');
-            chatInput.focus();
         }
 
         function openTool(tool) {
             const titles = {
+                exercices: 'Générateur d\'Exercices',
+                correction: 'Correcteur de Phrases',
                 quiz: 'Quiz Interactif',
-                stories: 'Histoires',
-                correction: 'Correcteur',
-                exercises: 'Exercices',
                 chat: 'Assistant Pédagogique'
+            };
+            const prompts = {
+                exercices: 'Quel type d\'exercices voulez-vous?',
+                correction: 'Écrivez la phrase à corriger:',
+                quiz: 'Sur quel sujet voulez-vous un quiz?',
+                chat: 'Posez votre question:'
             };
             
             currentContext = tool;
             modalTitle.textContent = titles[tool];
-            chatMessages.innerHTML = `
-                <div class="message assistant">
-                    <strong>🎓 Assistant</strong>
-                    <p>Comment puis-je vous aider?</p>
-                </div>
-            `;
+            inputLabel.textContent = prompts[tool];
+            textInput.placeholder = getPlaceholder(tool);
+            resetModal();
             modal.classList.add('active');
-            chatInput.focus();
+        }
+
+        function getPlaceholder(tool) {
+            const placeholders = {
+                exercices: 'Ex: 10 exercices sur le passé composé',
+                correction: 'Ex: Je suis allé au magasin hier',
+                quiz: 'Ex: les pronoms relatifs',
+                chat: 'Ex: quelle est la différence entre imparfait et passé composé?'
+            };
+            return placeholders[tool] || 'Écrivez ici...';
         }
 
         function searchTopic() {
@@ -535,29 +496,37 @@
             
             currentContext = 'search';
             modalTitle.textContent = 'Recherche';
-            chatMessages.innerHTML = '';
+            inputLabel.textContent = 'Votre recherche:';
+            textInput.value = query;
+            resetModal();
             modal.classList.add('active');
-            chatInput.value = query;
-            sendMessage();
-            document.getElementById('searchInput').value = '';
+            submitRequest();
+        }
+
+        function resetModal() {
+            errorContainer.innerHTML = '';
+            responseArea.style.display = 'none';
+            inputSection.style.display = 'block';
+            loading.classList.remove('active');
+            textInput.value = '';
+            currentResponse = '';
         }
 
         function closeModal() {
             modal.classList.remove('active');
         }
 
-        async function sendMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
+        async function submitRequest() {
+            const message = textInput.value.trim();
+            if (!message) {
+                showError('Veuillez écrire quelque chose');
+                return;
+            }
 
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message user';
-            userMsg.innerHTML = `<strong>Vous</strong><p>${escapeHtml(message)}</p>`;
-            chatMessages.appendChild(userMsg);
-            chatInput.value = '';
-
+            errorContainer.innerHTML = '';
+            inputSection.style.display = 'none';
             loading.classList.add('active');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            submitBtn.disabled = true;
 
             try {
                 const response = await fetch('/api/chat', {
@@ -566,68 +535,86 @@
                     body: JSON.stringify({ message })
                 });
 
-                if (!response.ok) throw new Error('Network error');
+                if (!response.ok) {
+                    throw new Error(`Erreur ${response.status}`);
+                }
 
                 const data = await response.json();
                 loading.classList.remove('active');
 
-                const assistantMsg = document.createElement('div');
-                assistantMsg.className = 'message assistant';
-                const formatted = data.response.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-                assistantMsg.innerHTML = `
-                    <strong>🎓 Assistant</strong>
-                    <div><p>${formatted}</p></div>
-                    <div class="message-actions">
-                        <button class="action-btn" onclick="copyText(this)">📋 Copier</button>
-                        <button class="action-btn" onclick="downloadPDF(this)">📄 PDF</button>
-                    </div>
-                `;
-                chatMessages.appendChild(assistantMsg);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                currentResponse = data.response;
+                const formatted = data.response
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                responseContent.innerHTML = `<p>${formatted}</p>`;
+                responseArea.style.display = 'block';
+                submitBtn.disabled = false;
+
             } catch (error) {
                 loading.classList.remove('active');
-                const errorMsg = document.createElement('div');
-                errorMsg.className = 'message assistant';
-                errorMsg.innerHTML = `<strong>❌ Erreur</strong><p>Impossible de se connecter au serveur.</p>`;
-                chatMessages.appendChild(errorMsg);
+                submitBtn.disabled = false;
+                showError('Impossible de se connecter. Vérifiez la configuration API.');
+                inputSection.style.display = 'block';
             }
         }
 
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        function showError(message) {
+            errorContainer.innerHTML = `<div class="error-message">❌ ${message}</div>`;
         }
 
-        function copyText(btn) {
-            const content = btn.closest('.message').querySelector('div').innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                showToast('✅ Copié');
-                btn.innerHTML = '✅';
-                setTimeout(() => btn.innerHTML = '📋 Copier', 2000);
+        function clearResponse() {
+            resetModal();
+        }
+
+        function copyResponse() {
+            navigator.clipboard.writeText(currentResponse).then(() => {
+                showToast('✅ Copié!');
             });
         }
 
-        function downloadPDF(btn) {
-            const content = btn.closest('.message').querySelector('div').innerText;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(14);
-            doc.text('FrancoPro', 20, 20);
-            doc.setFontSize(10);
-            doc.text('BETTAHAR Abdelkrim', 20, 28);
-            doc.setFontSize(11);
-            const lines = doc.splitTextToSize(content, 170);
-            doc.text(lines, 20, 38);
-            doc.save(`Lecon-${Date.now()}.pdf`);
-            showToast('✅ PDF téléchargé');
+        function downloadPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const margin = 20;
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                
+                doc.setFillColor(30, 64, 175);
+                doc.rect(0, 0, pageWidth, 30, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.text('FrancoPro', margin, 18);
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                let yPos = 40;
+                
+                const lines = doc.splitTextToSize(currentResponse, pageWidth - (margin * 2));
+                lines.forEach(line => {
+                    if (yPos > pageHeight - 30) {
+                        doc.addPage();
+                        yPos = margin;
+                    }
+                    doc.text(line, margin, yPos);
+                    yPos += 7;
+                });
+                
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(9);
+                    doc.text(`Page ${i}/${pageCount}`, margin, pageHeight - 10);
+                    doc.text('BETTAHAR Abdelkrim', pageWidth / 2, pageHeight - 10, { align: 'center' });
+                }
+                
+                doc.save(`FrancoPro_${Date.now()}.pdf`);
+                showToast('✅ PDF téléchargé');
+            } catch (error) {
+                showToast('❌ Erreur PDF');
+            }
         }
 
         function showToast(msg) {
@@ -636,6 +623,12 @@
             toast.classList.add('active');
             setTimeout(() => toast.classList.remove('active'), 2500);
         }
+
+        textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                submitRequest();
+            }
+        });
     </script>
 </body>
 </html>
