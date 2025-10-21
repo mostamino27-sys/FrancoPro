@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://francopro.vercel.app/sitemap.xml
+
+Crawl-delay: 1
