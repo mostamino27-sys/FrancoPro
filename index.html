@@ -7,33 +7,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --card: #334155;
-            --text: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --accent: #8b5cf6;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-light: #334155;
+            --text-light: #f1f5f9;
+            --text-muted: #94a3b8;
             --border: #475569;
             --success: #10b981;
             --error: #ef4444;
         }
+        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-light);
             line-height: 1.6;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
+        
+        /* Light Mode */
+        body.light-mode {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            color: #0f172a;
+        }
+        
         .header {
-            background: var(--surface);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
             padding: 1.5rem 2rem;
             border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
+        
+        body.light-mode .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid #cbd5e1;
+        }
+        
         .nav {
             max-width: 1400px;
             margin: 0 auto;
@@ -41,95 +60,225 @@
             justify-content: space-between;
             align-items: center;
         }
+        
         .logo {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .hero {
-            text-align: center;
-            padding: 3rem 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .hero h1 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--primary), #3b82f6);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
+        
+        .logo-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+        }
+        
+        .theme-toggle {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        body.light-mode .theme-toggle {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
         .hero p {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
         }
+        
+        body.light-mode .hero p {
+            color: #475569;
+        }
+        
         .search-container {
-            max-width: 600px;
-            margin: 0 auto 3rem;
+            max-width: 650px;
+            margin: 0 auto 4rem;
             position: relative;
         }
+        
         .search-input {
             width: 100%;
-            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
-            font-size: 1rem;
-            background: var(--surface);
+            padding: 1.5rem 4rem 1.5rem 1.5rem;
+            font-size: 1.05rem;
+            background: var(--bg-card);
             border: 2px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
+            border-radius: 16px;
+            color: var(--text-light);
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
+        
+        body.light-mode .search-input {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 8px 20px rgba(0, 0, 0, 0.3);
         }
+        
         .search-btn {
             position: absolute;
             right: 0.5rem;
             top: 50%;
             transform: translateY(-50%);
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
+            padding: 1rem 1.8rem;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
+        
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+        }
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 2rem 4rem;
+            padding: 0 2rem 5rem;
         }
+        
         .section-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            color: var(--text);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
+        
+        body.light-mode .section-title {
+            color: #0f172a;
+        }
+        
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
         }
+        
         .card {
-            background: var(--surface);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(51, 65, 85, 0.8) 100%);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
+            border-radius: 20px;
+            padding: 2.5rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
+        
+        body.light-mode .card {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
         .card:hover {
             border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--primary);
         }
-        .card-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .card-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
-        .card-desc { color: var(--text-secondary); font-size: 0.95rem; }
+        
+        body.light-mode .card:hover {
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2), 0 0 0 1px var(--primary);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.25rem;
+            display: inline-block;
+            filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.3));
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-light);
+        }
+        
+        body.light-mode .card-title {
+            color: #0f172a;
+        }
+        
+        .card-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        body.light-mode .card-desc {
+            color: #475569;
+        }
         
         .modal {
             display: none;
@@ -138,160 +287,298 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
             z-index: 1000;
             overflow-y: auto;
         }
+        
         .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem;
         }
+        
         .modal-content {
-            background: var(--surface);
+            background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 900px;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 950px;
             width: 100%;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease;
         }
+        
+        body.light-mode .modal-content {
+            background: #ffffff;
+            border-color: #cbd5e1;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
         }
-        .modal-title {
-            font-size: 1.5rem;
-            color: var(--text);
-        }
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-        .close-btn:hover { color: var(--text); }
         
-        .response-area {
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            min-height: 200px;
+        body.light-mode .modal-header {
+            border-bottom-color: #cbd5e1;
         }
-        .response-content {
-            color: var(--text);
-            line-height: 1.8;
+        
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
         }
-        .response-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
+        
+        body.light-mode .modal-title {
+            color: #0f172a;
         }
-        .action-btn {
-            background: var(--card);
+        
+        .close-btn {
+            background: var(--bg-light);
             border: 1px solid var(--border);
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            color: var(--text-muted);
             cursor: pointer;
-            font-size: 0.9rem;
-            color: var(--text);
+            transition: all 0.3s;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
         }
+        
+        body.light-mode .close-btn {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .close-btn:hover {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+            transform: rotate(90deg);
+        }
+        
+        .response-area {
+            background: var(--bg-dark);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            min-height: 200px;
+            border: 1px solid var(--border);
+        }
+        
+        body.light-mode .response-area {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        
+        .response-content {
+            color: var(--text-light);
+            line-height: 1.9;
+            font-size: 1.05rem;
+        }
+        
+        body.light-mode .response-content {
+            color: #0f172a;
+        }
+        
+        .response-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .response-content strong {
+            color: var(--primary);
+        }
+        
+        .response-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        body.light-mode .action-btn {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        
         .action-btn:hover {
             background: var(--primary);
             border-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
         }
         
         .input-section {
-            background: var(--bg);
-            padding: 1.5rem;
-            border-radius: 12px;
+            background: var(--bg-dark);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
         }
+        
+        body.light-mode .input-section {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        
         .input-label {
             display: block;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
             font-weight: 600;
-            color: var(--text);
+            color: var(--text-light);
+            font-size: 1.05rem;
         }
+        
+        body.light-mode .input-label {
+            color: #0f172a;
+        }
+        
         .text-input {
             width: 100%;
-            padding: 1rem;
-            background: var(--surface);
+            padding: 1.25rem;
+            background: var(--bg-card);
             border: 2px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
+            border-radius: 12px;
+            color: var(--text-light);
             font-size: 1rem;
             resize: vertical;
-            min-height: 100px;
+            min-height: 120px;
             font-family: inherit;
+            transition: all 0.3s;
         }
+        
+        body.light-mode .text-input {
+            background: #ffffff;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        
         .text-input:focus {
             outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
         }
+        
         .submit-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 1rem;
-            margin-top: 1rem;
+            font-size: 1.05rem;
+            margin-top: 1.5rem;
             width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
+        
         .submit-btn:hover {
-            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
         }
+        
         .submit-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
         }
         
         .loading {
             display: none;
             text-align: center;
-            padding: 2rem;
-            color: var(--text-secondary);
+            padding: 3rem;
+            color: var(--text-muted);
         }
+        
         .loading.active { display: block; }
+        
         .spinner {
             display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--border);
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
         
         .error-message {
-            background: var(--error);
-            color: white;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
         }
         
         footer {
-            background: var(--surface);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
             border-top: 1px solid var(--border);
-            padding: 2rem;
+            padding: 3rem 2rem;
             text-align: center;
-            margin-top: 4rem;
+            margin-top: 5rem;
         }
+        
+        body.light-mode footer {
+            background: rgba(255, 255, 255, 0.95);
+            border-top-color: #cbd5e1;
+        }
+        
+        footer p {
+            color: var(--text-muted);
+            margin: 0.5rem 0;
+        }
+        
+        body.light-mode footer p {
+            color: #475569;
+        }
+        
+        footer strong {
+            color: var(--text-light);
+        }
+        
+        body.light-mode footer strong {
+            color: #0f172a;
+        }
+        
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -299,16 +586,52 @@
             transform: translateX(-50%) translateY(100px);
             background: var(--success);
             color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            padding: 1.25rem 2.5rem;
+            border-radius: 12px;
             z-index: 1001;
             transition: transform 0.3s;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            font-weight: 500;
         }
-        .toast.active { transform: translateX(-50%) translateY(0); }
+        
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+        }
         
         @media (max-width: 768px) {
-            .cards-grid { grid-template-columns: 1fr; }
-            .modal-content { padding: 1.5rem; }
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        
+        body.light-mode ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
     </style>
 </head>
@@ -316,18 +639,21 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <span style="font-size: 2rem;">📚</span>
+                <span class="logo-icon">📚</span>
                 FrancoPro
             </div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span>
+            </button>
         </nav>
     </header>
 
     <div class="hero">
         <h1>Maîtrisez la Grammaire Française</h1>
-        <p>Plateforme interactive pour l'apprentissage personnalisé</p>
+        <p>Plateforme interactive pour apprenants arabophones</p>
         
         <div class="search-container">
-            <input type="text" class="search-input" id="searchInput" placeholder="Recherchez un sujet grammatical...">
+            <input type="text" class="search-input" id="searchInput" placeholder="Recherchez n'importe quel sujet grammatical...">
             <button class="search-btn" onclick="searchTopic()">🔍</button>
         </div>
     </div>
@@ -336,56 +662,142 @@
         <h2 class="section-title">📖 Leçons de Grammaire</h2>
         <div class="cards-grid">
             <div class="card" onclick="openLesson('temps')">
-                <div class="card-icon">⏰</div>
-                <div class="card-title">Les Temps Verbaux</div>
-                <div class="card-desc">Apprenez tous les temps</div>
+                <div class="card-content">
+                    <div class="card-icon">⏰</div>
+                    <div class="card-title">Les Temps Verbaux</div>
+                    <div class="card-desc">Maîtrisez tous les temps français avec des exemples détaillés</div>
+                </div>
             </div>
             <div class="card" onclick="openLesson('conjugaison')">
-                <div class="card-icon">🔄</div>
-                <div class="card-title">Conjugaison</div>
-                <div class="card-desc">Conjuguez n'importe quel verbe</div>
+                <div class="card-content">
+                    <div class="card-icon">🔄</div>
+                    <div class="card-title">Conjugaison</div>
+                    <div class="card-desc">Conjuguez n'importe quel verbe à tous les temps</div>
+                </div>
             </div>
             <div class="card" onclick="openLesson('pronoms')">
-                <div class="card-icon">👤</div>
-                <div class="card-title">Les Pronoms</div>
-                <div class="card-desc">Personnels, relatifs, possessifs</div>
+                <div class="card-content">
+                    <div class="card-icon">👤</div>
+                    <div class="card-title">Les Pronoms</div>
+                    <div class="card-desc">Personnels, relatifs, possessifs expliqués simplement</div>
+                </div>
             </div>
             <div class="card" onclick="openLesson('articles')">
-                <div class="card-icon">📝</div>
-                <div class="card-title">Les Articles</div>
-                <div class="card-desc">Définis et indéfinis</div>
+                <div class="card-content">
+                    <div class="card-icon">📝</div>
+                    <div class="card-title">Les Articles</div>
+                    <div class="card-desc">Définis, indéfinis et partitifs avec exemples</div>
+                </div>
             </div>
         </div>
 
         <h2 class="section-title">🎯 Outils Pratiques</h2>
         <div class="cards-grid">
             <div class="card" onclick="openTool('exercices')">
-                <div class="card-icon">📋</div>
-                <div class="card-title">Exercices</div>
-                <div class="card-desc">Entraînez-vous avec des exercices</div>
+                <div class="card-content">
+                    <div class="card-icon">📋</div>
+                    <div class="card-title">Exercices Personnalisés</div>
+                    <div class="card-desc">Générez des exercices adaptés à votre niveau</div>
+                </div>
             </div>
             <div class="card" onclick="openTool('correction')">
-                <div class="card-icon">✏️</div>
-                <div class="card-title">Correcteur</div>
-                <div class="card-desc">Corrigez vos phrases</div>
+                <div class="card-content">
+                    <div class="card-icon">✏️</div>
+                    <div class="card-title">Correcteur Intelligent</div>
+                    <div class="card-desc">Corrigez vos phrases avec explications détaillées</div>
+                </div>
             </div>
             <div class="card" onclick="openTool('quiz')">
-                <div class="card-icon">📊</div>
-                <div class="card-title">Quiz</div>
-                <div class="card-desc">Testez vos connaissances</div>
+                <div class="card-content">
+                    <div class="card-icon">📊</div>
+                    <div class="card-title">Quiz Interactif</div>
+                    <div class="card-desc">Testez vos connaissances avec des quiz personnalisés</div>
+                </div>
             </div>
             <div class="card" onclick="openTool('chat')">
-                <div class="card-icon">💬</div>
-                <div class="card-title">Assistant</div>
-                <div class="card-desc">Posez vos questions</div>
+                <div class="card-content">
+                    <div class="card-icon">💬</div>
+                    <div class="card-title">Assistant Personnel</div>
+                    <div class="card-desc">Posez toutes vos questions grammaticales</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">⚠️ Erreurs Fréquentes des Arabophones</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Étude menée auprès d'étudiants de l'Université de Mostaganem</p>
+        <div class="cards-grid">
+            <div class="card" onclick="openErrorAnalysis('articles')">
+                <div class="card-content">
+                    <div class="card-icon">📝</div>
+                    <div class="card-title">Confusion des Articles</div>
+                    <div class="card-desc">le/la/les vs un/une/des - Explications détaillées</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('genre')">
+                <div class="card-content">
+                    <div class="card-icon">⚖️</div>
+                    <div class="card-title">Genre des Noms</div>
+                    <div class="card-desc">Masculin/Féminin - Les règles et exceptions</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('prepositions')">
+                <div class="card-content">
+                    <div class="card-icon">🔗</div>
+                    <div class="card-title">Prépositions</div>
+                    <div class="card-desc">à/de/en/pour - Usages et différences</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('temps')">
+                <div class="card-content">
+                    <div class="card-icon">⏰</div>
+                    <div class="card-title">Temps Composés</div>
+                    <div class="card-desc">Passé composé vs Imparfait - Quand utiliser?</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('accords')">
+                <div class="card-content">
+                    <div class="card-icon">✅</div>
+                    <div class="card-title">Accords Difficiles</div>
+                    <div class="card-desc">Participe passé - Les cas complexes</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('pronoms')">
+                <div class="card-content">
+                    <div class="card-icon">👥</div>
+                    <div class="card-title">Pronoms Relatifs</div>
+                    <div class="card-desc">qui/que/dont/où - Explications claires</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('negation')">
+                <div class="card-content">
+                    <div class="card-icon">❌</div>
+                    <div class="card-title">La Négation</div>
+                    <div class="card-desc">ne...pas/plus/jamais - Formations correctes</div>
+                </div>
+            </div>
+            
+            <div class="card" onclick="openErrorAnalysis('custom')">
+                <div class="card-content">
+                    <div class="card-icon">🔍</div>
+                    <div class="card-title">Analyseur d'Erreurs</div>
+                    <div class="card-desc">Soumettez votre phrase pour analyse détaillée</div>
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <p style="margin-bottom: 0.5rem;"><strong>FrancoPro</strong> - Université de Mostaganem</p>
-        <p style="color: var(--text-secondary); font-size: 0.9rem;">Année 2024-2025</p>
-        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 1rem;">Développé par <strong>BETTAHAR Abdelkrim</strong></p>
+        <p style="font-size: 1.1rem; margin-bottom: 0.75rem;"><strong>FrancoPro</strong> - Université de Mostaganem</p>
+        <p>Faculté des Langues Étrangères</p>
+        <p>Année universitaire 2024-2025</p>
+        <p style="margin-top: 1.5rem;">Développé par <strong>BETTAHAR Abdelkrim</strong></p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem;">Master en Sciences du Langage</p>
     </footer>
 
     <div class="modal" id="modal">
@@ -401,26 +813,25 @@
                 <div class="response-content" id="responseContent"></div>
                 <div class="response-actions">
                     <button class="action-btn" onclick="copyResponse()">📋 Copier</button>
-                    <button class="action-btn" onclick="downloadPDF()">📄 PDF</button>
-                    <button class="action-btn" onclick="clearResponse()">🔄 Nouveau</button>
+                    <button class="action-btn" onclick="downloadPDF()">📄 Télécharger PDF</button>
+                    <button class="action-btn" onclick="clearResponse()">🔄 Nouvelle Question</button>
                 </div>
             </div>
             
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <p style="margin-top: 1rem;">Préparation de la réponse...</p>
+                <p style="margin-top: 1.5rem; font-size: 1.05rem;">Préparation de votre réponse personnalisée...</p>
             </div>
             
             <div class="input-section" id="inputSection">
                 <label class="input-label" id="inputLabel">Votre question:</label>
-                <textarea class="text-input" id="textInput" placeholder="Écrivez ici..."></textarea>
-                <button class="submit-btn" id="submitBtn" onclick="submitRequest()">Envoyer</button>
+                <textarea class="text-input" id="textInput" placeholder="Écrivez votre question ici..."></textarea>
+                <button class="submit-btn" id="submitBtn" onclick="submitRequest()">Envoyer la Question</button>
             </div>
         </div>
     </div>
 
     <div class="toast" id="toast"></div>
-
     <script>
         const modal = document.getElementById('modal');
         const modalTitle = document.getElementById('modalTitle');
@@ -436,6 +847,35 @@
         let currentContext = '';
         let currentResponse = '';
 
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('light-mode')) {
+                body.classList.remove('light-mode');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light-mode');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.textContent = '☀️';
+            } else {
+                themeIcon.textContent = '🌙';
+            }
+        });
+
         function openLesson(topic) {
             const titles = {
                 temps: 'Les Temps Verbaux',
@@ -444,29 +884,30 @@
                 articles: 'Les Articles'
             };
             const prompts = {
-                temps: 'Explique-moi les temps verbaux en français',
-                conjugaison: 'Quel verbe veux-tu conjuguer?',
-                pronoms: 'Explique-moi les pronoms français',
-                articles: 'Explique-moi les articles en français'
+                temps: 'Sur quel temps voulez-vous en savoir plus?',
+                conjugaison: 'Quel verbe voulez-vous conjuguer?',
+                pronoms: 'Quel type de pronoms vous intéresse?',
+                articles: 'Que voulez-vous apprendre sur les articles?'
             };
             
             currentContext = topic;
             modalTitle.textContent = titles[topic];
             inputLabel.textContent = prompts[topic];
-            textInput.placeholder = 'Ex: le verbe être au présent';
+            textInput.placeholder = 'Ex: le passé composé en détail';
             resetModal();
             modal.classList.add('active');
+            textInput.focus();
         }
 
         function openTool(tool) {
             const titles = {
                 exercices: 'Générateur d\'Exercices',
-                correction: 'Correcteur de Phrases',
+                correction: 'Correcteur Intelligent',
                 quiz: 'Quiz Interactif',
-                chat: 'Assistant Pédagogique'
+                chat: 'Assistant Personnel'
             };
             const prompts = {
-                exercices: 'Quel type d\'exercices voulez-vous?',
+                exercices: 'Quel type d\'exercices souhaitez-vous?',
                 correction: 'Écrivez la phrase à corriger:',
                 quiz: 'Sur quel sujet voulez-vous un quiz?',
                 chat: 'Posez votre question:'
@@ -478,16 +919,197 @@
             textInput.placeholder = getPlaceholder(tool);
             resetModal();
             modal.classList.add('active');
+            textInput.focus();
         }
 
         function getPlaceholder(tool) {
             const placeholders = {
-                exercices: 'Ex: 10 exercices sur le passé composé',
-                correction: 'Ex: Je suis allé au magasin hier',
-                quiz: 'Ex: les pronoms relatifs',
+                exercices: 'Ex: 10 exercices sur le subjonctif avec corrections',
+                correction: 'Ex: Je suis allé au magasin hier pour acheter du pain',
+                quiz: 'Ex: quiz de 10 questions sur les pronoms relatifs',
                 chat: 'Ex: quelle est la différence entre imparfait et passé composé?'
             };
-            return placeholders[tool] || 'Écrivez ici...';
+            return placeholders[tool] || 'Écrivez votre question...';
+        }
+
+        function openErrorAnalysis(errorType) {
+            const errorData = {
+                articles: {
+                    title: 'Confusion des Articles',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Confusion des articles (le/la/les vs un/une/des)
+
+Explique en détail:
+1. La différence entre articles définis et indéfinis
+2. Les 5 erreurs les plus fréquentes chez les arabophones
+3. Pourquoi ces erreurs sont courantes (différence arabe-français)
+4. 10 exemples concrets: 5 phrases FAUSSES + 5 phrases CORRECTES
+5. Une astuce mnémotechnique
+6. 3 exercices pratiques avec corrections
+
+Utilise un ton pédagogique. Structure ta réponse clairement.`
+                },
+                
+                genre: {
+                    title: 'Genre des Noms',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Genre des noms (Masculin/Féminin)
+
+Explique en détail:
+1. Comment déterminer le genre d'un nom
+2. Les terminaisons indicatives du masculin
+3. Les terminaisons indicatives du féminin
+4. Les 10 noms les plus confondus par les arabophones
+5. Pourquoi l'arabe et le français diffèrent
+6. 8 exemples pratiques avec corrections
+7. 3 exercices d'application`
+                },
+                
+                prepositions: {
+                    title: 'Les Prépositions',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Les prépositions (à, de, en, pour, etc.)
+
+Explique en détail:
+1. Les prépositions de base et leurs usages
+2. La différence entre "à" et "de"
+3. Quand utiliser "en" vs "dans"
+4. Les 7 erreurs fréquentes chez les arabophones
+5. 12 exemples: phrases fausses + corrections
+6. Prépositions avec pays et villes
+7. 4 exercices pratiques`
+                },
+                
+                temps: {
+                    title: 'Temps Composés',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Passé composé vs Imparfait
+
+Explique en détail:
+1. Formation du passé composé
+2. Formation de l'imparfait
+3. QUAND utiliser chaque temps
+4. 10 phrases avec le MAUVAIS temps + corrections
+5. Comment les arabophones confondent ces temps
+6. Méthode simple pour choisir
+7. 5 exercices avec solutions`
+                },
+                
+                accords: {
+                    title: 'Accords du Participe Passé',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Accord du participe passé
+
+Explique en détail:
+1. Règle de base avec "être"
+2. Non-accord avec "avoir" (sauf exceptions)
+3. Le cas du COD placé avant
+4. Verbes pronominaux
+5. Les 8 erreurs fréquentes chez les arabophones
+6. 15 exemples avec corrections
+7. Tableau récapitulatif
+8. 4 exercices`
+                },
+                
+                pronoms: {
+                    title: 'Pronoms Relatifs',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: Pronoms relatifs (qui, que, dont, où)
+
+Explique en détail:
+1. "QUI" = sujet (5 exemples)
+2. "QUE" = COD (5 exemples)
+3. "DONT" = complément avec "de" (5 exemples)
+4. "OÙ" = lieu/temps (5 exemples)
+5. Les 6 erreurs typiques des arabophones
+6. Méthode pour choisir le bon pronom
+7. 10 phrases à compléter avec corrections`
+                },
+                
+                negation: {
+                    title: 'La Négation',
+                    prompt: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux arabophones.
+
+SUJET: La négation en français
+
+Explique en détail:
+1. Structure de base: ne...pas
+2. Autres négations: plus, jamais, rien, personne
+3. Position avec les temps composés
+4. Les 7 erreurs chez les arabophones
+5. 12 exemples avec corrections
+6. Négation avec articles
+7. 5 exercices pratiques`
+                },
+                
+                custom: {
+                    title: 'Analyseur d\'Erreurs Personnalisé',
+                    label: 'Écrivez votre phrase en français:',
+                    placeholder: 'Ex: Je vais à le marché pour acheter des pain',
+                    prompt: 'ANALYSEUR D\'ERREURS pour arabophones:\n\nAnalyse cette phrase et:\n1. Identifie TOUTES les erreurs\n2. Pour CHAQUE erreur:\n   - Explique pourquoi\n   - Donne la correction\n   - Explique la règle\n3. Phrase complètement corrigée\n4. Pourquoi les arabophones font ces erreurs\n5. 3 phrases similaires pour s\'entraîner\n\nPHRASE:\n'
+                }
+            };
+            
+            const data = errorData[errorType];
+            
+            if (errorType === 'custom') {
+                currentContext = 'error-custom';
+                modalTitle.textContent = data.title;
+                inputLabel.textContent = data.label;
+                textInput.placeholder = data.placeholder;
+                textInput.value = '';
+                window.customErrorPrompt = data.prompt;
+                resetModal();
+                modal.classList.add('active');
+                textInput.focus();
+            } else {
+                currentContext = 'error-auto';
+                modalTitle.textContent = data.title;
+                inputSection.style.display = 'none';
+                loading.classList.add('active');
+                modal.classList.add('active');
+                submitErrorAnalysis(data.prompt);
+            }
+        }
+        
+        async function submitErrorAnalysis(prompt) {
+            loading.classList.add('active');
+            responseArea.style.display = 'none';
+            errorContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: prompt })
+                });
+
+                if (!response.ok) throw new Error(`Erreur ${response.status}`);
+
+                const data = await response.json();
+                loading.classList.remove('active');
+
+                currentResponse = data.response;
+                const formatted = data.response
+                    .replace(/\n\n/g, '</p><p>')
+                    .replace(/\n/g, '<br>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(\d+\.)/g, '<br><strong>$1</strong>');
+                
+                responseContent.innerHTML = `<p>${formatted}</p>`;
+                responseArea.style.display = 'block';
+
+            } catch (error) {
+                loading.classList.remove('active');
+                showError('Erreur de connexion. Réessayez.');
+                inputSection.style.display = 'block';
+            }
         }
 
         function searchTopic() {
@@ -508,7 +1130,7 @@
             responseArea.style.display = 'none';
             inputSection.style.display = 'block';
             loading.classList.remove('active');
-            textInput.value = '';
+            if (currentContext !== 'search') textInput.value = '';
             currentResponse = '';
         }
 
@@ -523,6 +1145,11 @@
                 return;
             }
 
+            let finalMessage = message;
+            if (currentContext === 'error-custom' && window.customErrorPrompt) {
+                finalMessage = window.customErrorPrompt + message;
+            }
+
             errorContainer.innerHTML = '';
             inputSection.style.display = 'none';
             loading.classList.add('active');
@@ -532,12 +1159,10 @@
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ message: finalMessage })
                 });
 
-                if (!response.ok) {
-                    throw new Error(`Erreur ${response.status}`);
-                }
+                if (!response.ok) throw new Error(`Erreur ${response.status}`);
 
                 const data = await response.json();
                 loading.classList.remove('active');
@@ -546,7 +1171,8 @@
                 const formatted = data.response
                     .replace(/\n\n/g, '</p><p>')
                     .replace(/\n/g, '<br>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(\d+\.)/g, '<br><strong>$1</strong>');
                 
                 responseContent.innerHTML = `<p>${formatted}</p>`;
                 responseArea.style.display = 'block';
@@ -555,7 +1181,7 @@
             } catch (error) {
                 loading.classList.remove('active');
                 submitBtn.disabled = false;
-                showError('Impossible de se connecter. Vérifiez la configuration API.');
+                showError('Impossible de se connecter. Réessayez.');
                 inputSection.style.display = 'block';
             }
         }
@@ -566,11 +1192,12 @@
 
         function clearResponse() {
             resetModal();
+            textInput.focus();
         }
 
         function copyResponse() {
             navigator.clipboard.writeText(currentResponse).then(() => {
-                showToast('✅ Copié!');
+                showToast('✅ Texte copié!');
             });
         }
 
@@ -585,7 +1212,7 @@
                 doc.setFillColor(30, 64, 175);
                 doc.rect(0, 0, pageWidth, 30, 'F');
                 doc.setTextColor(255, 255, 255);
-                doc.setFontSize(18);
+                doc.setFontSize(20);
                 doc.text('FrancoPro', margin, 18);
                 
                 doc.setTextColor(0, 0, 0);
@@ -607,11 +1234,11 @@
                     doc.setPage(i);
                     doc.setFontSize(9);
                     doc.text(`Page ${i}/${pageCount}`, margin, pageHeight - 10);
-                    doc.text('BETTAHAR Abdelkrim', pageWidth / 2, pageHeight - 10, { align: 'center' });
+                    doc.text('BETTAHAR Abdelkrim - Université de Mostaganem', pageWidth / 2, pageHeight - 10, { align: 'center' });
                 }
                 
-                doc.save(`FrancoPro_${Date.now()}.pdf`);
-                showToast('✅ PDF téléchargé');
+                doc.save(`FrancoPro_Lecon_${Date.now()}.pdf`);
+                showToast('✅ PDF téléchargé!');
             } catch (error) {
                 showToast('❌ Erreur PDF');
             }
@@ -621,12 +1248,18 @@
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.classList.add('active');
-            setTimeout(() => toast.classList.remove('active'), 2500);
+            setTimeout(() => toast.classList.remove('active'), 3000);
         }
 
         textInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) {
                 submitRequest();
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
             }
         });
     </script>
