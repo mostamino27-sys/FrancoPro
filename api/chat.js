@@ -1,5 +1,5 @@
 module.exports = async (req, res) => {
-  // CORS
+  // CORS Headers
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -21,14 +21,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Message vide' });
     }
 
-    // جرب OpenRouter أولاً
     const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
     
     if (!OPENROUTER_KEY) {
       console.error('❌ Pas de clé API');
       return res.status(500).json({ 
         error: 'Configuration manquante',
-        response: 'Bonjour! Je suis désolé mais je ne peux pas répondre maintenant. Veuillez vérifier la configuration de la clé API dans Vercel.' 
+        response: 'Erreur: Clé API manquante dans Vercel.' 
       });
     }
 
@@ -47,7 +46,32 @@ module.exports = async (req, res) => {
         messages: [
           {
             role: 'system',
-            content: 'Tu es un expert en grammaire française. Réponds toujours en français de manière claire et pédagogique. Donne des exemples concrets. Structure tes réponses en paragraphes courts.'
+            content: `Tu es un expert en grammaire française spécialisé dans l'enseignement aux apprenants arabophones.
+
+RÈGLES IMPORTANTES:
+- Réponds TOUJOURS en français
+- Donne des explications claires et pédagogiques
+- Fournis des exemples concrets et variés
+- Structure tes réponses avec des paragraphes courts
+- Adapte ton niveau selon la question
+- Ne mentionne JAMAIS que tu es un système automatisé
+- Présente-toi comme un formateur de FrancoPro si demandé
+
+DOMAINES D'EXPERTISE:
+- Grammaire française complète (A1-C2)
+- Conjugaison de tous les verbes
+- Orthographe et règles d'accord
+- Syntaxe et structure des phrases
+- Pronoms, articles, prépositions
+- Temps verbaux et leurs usages
+- Particularités pour les arabophones
+
+MÉTHODOLOGIE:
+- Donne toujours des exemples pratiques
+- Explique POURQUOI une règle existe
+- Compare avec l'arabe quand c'est pertinent
+- Propose des exercices d'application
+- Sois encourageant et positif`
           },
           {
             role: 'user',
@@ -55,7 +79,10 @@ module.exports = async (req, res) => {
           }
         ],
         temperature: 0.7,
-        max_tokens: 1000
+        max_tokens: 1200,
+        top_p: 1,
+        frequency_penalty: 0.2,
+        presence_penalty: 0.1
       })
     });
 
@@ -66,7 +93,7 @@ module.exports = async (req, res) => {
     if (!response.ok) {
       console.error('❌ Erreur API:', data);
       return res.status(200).json({ 
-        response: `Je suis désolé, je ne peux pas répondre maintenant. (Erreur ${response.status})\n\nVeuillez vérifier:\n1. La clé API est valide\n2. Vous avez du crédit sur OpenRouter\n3. Le modèle google/gemma-2-9b-it:free est disponible` 
+        response: `Je suis désolé, je ne peux pas répondre maintenant. (Erreur ${response.status})\n\nVeuillez vérifier:\n1. La clé API est valide\n2. Vous avez du crédit sur OpenRouter\n3. Le modèle est disponible` 
       });
     }
 
