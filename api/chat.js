@@ -1,4 +1,5 @@
 module.exports = async (req, res) => {
+  // CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -16,56 +17,37 @@ module.exports = async (req, res) => {
   try {
     const { message } = req.body;
 
-    if (!message) {
-      return res.status(400).json({ error: 'Message requis' });
+    if (!message || message.trim() === '') {
+      return res.status(400).json({ error: 'Message vide' });
     }
 
-    const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-
-    if (!OPENROUTER_API_KEY) {
-      console.error('❌ OPENROUTER_API_KEY manquante');
-      return res.status(500).json({ error: 'Configuration error' });
+    // جرب OpenRouter أولاً
+    const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+    
+    if (!OPENROUTER_KEY) {
+      console.error('❌ Pas de clé API');
+      return res.status(500).json({ 
+        error: 'Configuration manquante',
+        response: 'Bonjour! Je suis désolé mais je ne peux pas répondre maintenant. Veuillez vérifier la configuration de la clé API dans Vercel.' 
+      });
     }
 
-    console.log('✅ Envoi à OpenRouter (Gemma 2)...');
+    console.log('📤 Envoi à OpenRouter...');
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+        'Authorization': `Bearer ${OPENROUTER_KEY}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': 'https://francopro.vercel.app',
-        'X-Title': 'FrancoPro - Plateforme Grammaire Française'
+        'X-Title': 'FrancoPro'
       },
       body: JSON.stringify({
         model: 'google/gemma-2-9b-it:free',
         messages: [
           {
             role: 'system',
-            content: `Tu es un expert en grammaire française et professeur de FLE (Français Langue Étrangère). Tu travailles pour FrancoPro, une plateforme d'apprentissage.
-
-RÈGLES STRICTES:
-- Réponds TOUJOURS en français uniquement
-- Donne des explications claires et structurées
-- Fournis 3-5 exemples concrets pour chaque règle
-- Utilise un ton pédagogique et encourageant
-- Adapte ton niveau selon la question (A1, A2, B1, B2, C1, C2)
-- Ne mentionne JAMAIS que tu es une IA ou un système automatisé
-- Structure tes réponses en paragraphes courts et clairs
-
-DOMAINES D'EXPERTISE:
-- Grammaire française complète (tous niveaux)
-- Conjugaison (tous temps et modes)
-- Orthographe et règles d'accord
-- Syntaxe et structure des phrases
-- Pronoms, articles, prépositions
-- Voix active, passive, pronominale
-
-FORMAT DE RÉPONSE:
-1. Explication brève et claire
-2. Règles principales (avec numéros si plusieurs)
-3. Exemples variés et concrets
-4. Astuces ou erreurs courantes à éviter`
+            content: 'Tu es un expert en grammaire française. Réponds toujours en français de manière claire et pédagogique. Donne des exemples concrets. Structure tes réponses en paragraphes courts.'
           },
           {
             role: 'user',
@@ -73,48 +55,37 @@ FORMAT DE RÉPONSE:
           }
         ],
         temperature: 0.7,
-        max_tokens: 1200,
-        top_p: 1,
-        frequency_penalty: 0.2,
-        presence_penalty: 0.1
+        max_tokens: 1000
       })
     });
 
+    const data = await response.json();
+    
+    console.log('📥 Statut:', response.status);
+
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('❌ Erreur OpenRouter:', errorData);
-      
-      // Messages d'erreur en français
-      if (response.status === 401) {
-        return res.status(401).json({ error: 'Clé API invalide' });
-      }
-      if (response.status === 429) {
-        return res.status(429).json({ error: 'Limite atteinte. Réessayez dans quelques secondes.' });
-      }
-      
-      return res.status(response.status).json({ 
-        error: 'Erreur du service',
-        details: errorData 
+      console.error('❌ Erreur API:', data);
+      return res.status(200).json({ 
+        response: `Je suis désolé, je ne peux pas répondre maintenant. (Erreur ${response.status})\n\nVeuillez vérifier:\n1. La clé API est valide\n2. Vous avez du crédit sur OpenRouter\n3. Le modèle google/gemma-2-9b-it:free est disponible` 
       });
     }
 
-    const data = await response.json();
-
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('❌ Format invalide:', data);
-      return res.status(500).json({ error: 'Réponse invalide du service' });
+      console.error('❌ Format invalide');
+      return res.status(200).json({ 
+        response: 'Réponse invalide du serveur. Veuillez réessayer.' 
+      });
     }
 
     const aiResponse = data.choices[0].message.content;
-    console.log('✅ Réponse envoyée avec succès');
+    console.log('✅ Réponse envoyée');
 
     return res.status(200).json({ response: aiResponse });
 
   } catch (error) {
-    console.error('❌ Erreur serveur:', error.message);
-    return res.status(500).json({ 
-      error: 'Erreur interne du serveur',
-      message: error.message 
+    console.error('❌ Erreur:', error.message);
+    return res.status(200).json({ 
+      response: `Une erreur s'est produite: ${error.message}\n\nVeuillez:\n1. Vérifier votre connexion\n2. Réessayer dans quelques secondes\n3. Contacter le support si le problème persiste` 
     });
   }
 };
