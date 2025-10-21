@@ -1,7 +1,7 @@
 {
   "name": "francopro",
   "version": "1.0.0",
-  "description": "Plateforme interactive pour maîtriser la grammaire française",
+  "description": "Plateforme interactive pour l'apprentissage de la grammaire française - Université de Mostaganem",
   "main": "index.html",
   "scripts": {
     "dev": "vercel dev",
@@ -11,10 +11,16 @@
     "french",
     "grammar",
     "learning",
-    "education"
+    "education",
+    "arabophones",
+    "FLE"
   ],
   "author": "BETTAHAR Abdelkrim",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/francopro"
+  },
   "dependencies": {
     "node-fetch": "^2.6.7"
   }
