@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FrancoPro - Plateforme d'Apprentissage de la Grammaire Française</title>
-    <meta name="description" content="Plateforme interactive pour l'enseignement de la grammaire française. Projet de recherche en Sciences du Langage - Université de Mostaganem.">
-    <meta name="keywords" content="grammaire française, FLE, didactique, enseignement des langues">
-    <meta name="author" content="Université de Mostaganem">
+    <title>FrancoPro - Plateforme d'Apprentissage</title>
+    <meta name="description" content="Plateforme interactive pour l'enseignement de la grammaire française">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
     <style>
         :root {
@@ -18,7 +16,6 @@
             --text-secondary: #475569;
             --border: #e2e8f0;
             --success: #10b981;
-            --shadow: rgba(0, 0, 0, 0.08);
         }
         [data-theme="dark"] {
             --primary: #3b82f6;
@@ -29,42 +26,200 @@
             --border: #334155;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
-        .header { background: var(--surface); border-bottom: 2px solid var(--border); padding: 1.5rem 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px var(--shadow); }
-        .nav { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .logo-title { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
-        .logo-subtitle { font-size: 0.85rem; color: var(--text-secondary); }
-        .theme-toggle { background: var(--surface); border: 2px solid var(--border); padding: 0.6rem 1.2rem; border-radius: 8px; cursor: pointer; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 0.8rem 1.8rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; }
-        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; padding: 4rem 2rem; text-align: center; }
-        .hero h1 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
-        .university-badge { background: rgba(255, 255, 255, 0.2); padding: 1rem 2rem; border-radius: 10px; display: inline-block; margin-top: 1rem; }
-        .research-info { max-width: 1200px; margin: 3rem auto; padding: 0 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        .info-card { background: var(--surface); padding: 2rem; border-radius: 12px; border: 2px solid var(--border); text-align: center; }
-        .info-icon { font-size: 3rem; margin-bottom: 1rem; }
-        .section { margin-bottom: 4rem; max-width: 1200px; margin-left: auto; margin-right: auto; padding: 0 2rem; }
-        .section-title { font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--primary); margin-bottom: 0.5rem; text-align: center; }
-        .section-subtitle { color: var(--text-secondary); font-size: 1.1rem; text-align: center; margin-bottom: 2rem; }
-        .chat-container { background: var(--surface); border-radius: 12px; padding: 2rem; margin-top: 2rem; }
-        .chat-messages { max-height: 500px; overflow-y: auto; margin-bottom: 1.5rem; padding: 1rem; background: var(--bg); border-radius: 10px; }
-        .message { margin-bottom: 1.5rem; padding: 1.5rem; border-radius: 10px; }
-        .message.user { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; margin-left: 15%; }
-        .message.assistant { background: var(--surface); border: 2px solid var(--border); margin-right: 15%; }
-        .message-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-        .action-btn { background: var(--bg); border: 1px solid var(--border); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
-        .action-btn:hover { background: var(--primary); color: white; }
-        .chat-input { flex: 1; padding: 1rem 1.5rem; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 1rem; resize: vertical; min-height: 50px; font-family: inherit; }
-        .chat-input:focus { outline: none; border-color: var(--primary); }
-        .chat-input-container { display: flex; gap: 1rem; }
-        .loading { display: none; text-align: center; padding: 1rem; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            line-height: 1.6;
+            transition: all 0.3s;
+        }
+        .header { 
+            background: var(--surface); 
+            border-bottom: 2px solid var(--border); 
+            padding: 1rem; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        .nav { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-title { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--primary); 
+        }
+        .logo-subtitle { 
+            font-size: 0.75rem; 
+            color: var(--text-secondary); 
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .theme-toggle, .btn-primary { 
+            padding: 0.6rem 1rem; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .theme-toggle {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+        .btn-primary { 
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-primary:active { 
+            transform: scale(0.95); 
+        }
+        .hero { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            padding: 2rem 1rem; 
+            text-align: center; 
+        }
+        .hero h1 { 
+            font-size: clamp(1.5rem, 4vw, 2.5rem); 
+            margin-bottom: 0.5rem; 
+        }
+        .hero p {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            opacity: 0.95;
+            margin-bottom: 1rem;
+        }
+        .university-badge { 
+            background: rgba(255, 255, 255, 0.2); 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 8px; 
+            display: inline-block; 
+        }
+        .section { 
+            max-width: 1200px; 
+            margin: 2rem auto; 
+            padding: 0 1rem; 
+        }
+        .chat-container { 
+            background: var(--surface); 
+            border-radius: 12px; 
+            padding: 1rem; 
+            margin-top: 1rem; 
+        }
+        .chat-messages { 
+            max-height: 400px; 
+            overflow-y: auto; 
+            margin-bottom: 1rem; 
+            padding: 1rem; 
+            background: var(--bg); 
+            border-radius: 8px; 
+        }
+        .message { 
+            margin-bottom: 1rem; 
+            padding: 1rem; 
+            border-radius: 8px; 
+            word-wrap: break-word;
+        }
+        .message.user { 
+            background: var(--primary); 
+            color: white; 
+            margin-left: 10%;
+        }
+        .message.assistant { 
+            background: var(--surface); 
+            border: 2px solid var(--border); 
+            margin-right: 10%;
+        }
+        .message strong {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        .message-actions { 
+            display: flex; 
+            gap: 0.5rem; 
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .action-btn { 
+            background: var(--bg); 
+            border: 1px solid var(--border); 
+            padding: 0.4rem 0.8rem; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+        .action-btn:active { 
+            transform: scale(0.95); 
+        }
+        .chat-input-container { 
+            display: flex; 
+            gap: 0.5rem; 
+        }
+        .chat-input { 
+            flex: 1; 
+            padding: 0.75rem; 
+            border: 2px solid var(--border); 
+            border-radius: 8px; 
+            background: var(--bg); 
+            color: var(--text); 
+            font-size: 1rem; 
+            resize: none;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        .chat-input:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+        }
+        .loading { 
+            display: none; 
+            text-align: center; 
+            padding: 1rem;
+            color: var(--text-secondary);
+        }
         .loading.active { display: block; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        footer { background: var(--surface); border-top: 2px solid var(--border); padding: 3rem 2rem; margin-top: 4rem; }
-        .footer-content { max-width: 1200px; margin: 0 auto; text-align: center; }
-        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--success); color: white; padding: 1rem 2rem; border-radius: 8px; z-index: 1001; transition: transform 0.3s; }
-        .toast.active { transform: translateX(-50%) translateY(0); }
-        @media (max-width: 768px) { .message.user, .message.assistant { margin: 0 0 1rem 0; } }
+        footer { 
+            background: var(--surface); 
+            border-top: 2px solid var(--border); 
+            padding: 2rem 1rem; 
+            margin-top: 2rem; 
+            text-align: center;
+        }
+        .toast { 
+            position: fixed; 
+            bottom: 2rem; 
+            left: 50%; 
+            transform: translateX(-50%) translateY(100px); 
+            background: var(--success); 
+            color: white; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 8px; 
+            z-index: 1001; 
+            transition: transform 0.3s; 
+        }
+        .toast.active { 
+            transform: translateX(-50%) translateY(0); 
+        }
+        @media (max-width: 768px) {
+            .logo-subtitle { display: none; }
+            .message.user, .message.assistant { 
+                margin: 0 0 1rem 0; 
+            }
+        }
     </style>
 </head>
 <body>
@@ -72,108 +227,91 @@
         <nav class="nav">
             <div class="logo">
                 <div class="logo-title">FrancoPro</div>
-                <div class="logo-subtitle">Projet de Recherche en Sciences du Langage</div>
+                <div class="logo-subtitle">Sciences du Langage</div>
             </div>
-            <div style="display: flex; gap: 1rem; align-items: center;">
-                <button class="theme-toggle" id="themeToggle">🌙</button>
-                <a href="#platform" class="btn-primary">Tester la Plateforme</a>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</button>
+                <a href="#platform" class="btn-primary">Tester</a>
             </div>
         </nav>
     </header>
 
     <section class="hero">
-        <div style="max-width: 900px; margin: 0 auto;">
-            <h1>Plateforme Interactive d'Apprentissage de la Grammaire Française</h1>
-            <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.95;">Application des technologies avancées dans l'enseignement de la grammaire française aux apprenants arabophones</p>
+        <div>
+            <h1>Plateforme d'Apprentissage de la Grammaire Française</h1>
+            <p>Technologies avancées pour l'enseignement aux apprenants arabophones</p>
             <div class="university-badge">
                 <strong>🎓 Université de Mostaganem</strong><br>
-                <span style="font-size: 0.9rem;">Faculté des Langues Étrangères - Master en Sciences du Langage</span>
+                Master en Sciences du Langage
             </div>
-        </div>
-    </section>
-
-    <section class="research-info">
-        <div class="info-card">
-            <div class="info-icon">🎯</div>
-            <h3 style="color: var(--primary);">Domaine</h3>
-            <p>Didactique des Langues & Technologies Éducatives</p>
-        </div>
-        <div class="info-card">
-            <div class="info-icon">🔬</div>
-            <h3 style="color: var(--primary);">Méthodologie</h3>
-            <p>Approche Expérimentale</p>
-        </div>
-        <div class="info-card">
-            <div class="info-icon">👥</div>
-            <h3 style="color: var(--primary);">Public Cible</h3>
-            <p>Apprenants Arabophones (A1-C2)</p>
-        </div>
-        <div class="info-card">
-            <div class="info-icon">💡</div>
-            <h3 style="color: var(--primary);">Innovation</h3>
-            <p>Apprentissage Personnalisé</p>
         </div>
     </section>
 
     <main>
         <section class="section" id="platform">
-            <h2 class="section-title">Plateforme Interactive</h2>
-            <p class="section-subtitle">Testez l'assistant pédagogique</p>
+            <h2 style="text-align: center; color: var(--primary); margin-bottom: 0.5rem;">Assistant Pédagogique</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1rem;">Posez vos questions sur la grammaire française</p>
             
             <div class="chat-container">
                 <div class="chat-messages" id="chatMessages">
                     <div class="message assistant">
-                        <strong>🎓 Assistant Pédagogique</strong>
-                        <p>Bonjour! Je suis votre assistant pédagogique pour l'apprentissage de la grammaire française.</p>
-                        <p style="margin-top: 1rem;"><strong>Vous pouvez:</strong></p>
-                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
-                            <li>Demander des leçons sur n'importe quel sujet grammatical</li>
-                            <li>Obtenir des exercices adaptés à votre niveau (A1-C2)</li>
+                        <strong>🎓 Assistant</strong>
+                        <p>Bonjour! Je suis votre assistant pédagogique.</p>
+                        <p style="margin-top: 0.5rem;"><strong>Vous pouvez:</strong></p>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem; font-size: 0.9rem;">
+                            <li>Demander des leçons grammaticales</li>
+                            <li>Obtenir des exercices (A1-C2)</li>
                             <li>Poser des questions spécifiques</li>
-                            <li>Recevoir des explications détaillées</li>
                         </ul>
                     </div>
                 </div>
-                <div class="loading" id="loading">
-                    <span class="spinner"></span> Préparation de la réponse...
-                </div>
+                <div class="loading" id="loading">⏳ Préparation...</div>
                 <div class="chat-input-container">
-                    <textarea class="chat-input" id="chatInput" placeholder="Exemple: Explique-moi le subjonctif avec des exercices..." rows="3"></textarea>
-                    <button class="btn-primary" id="sendBtn">Envoyer</button>
+                    <textarea class="chat-input" id="chatInput" placeholder="Votre question..." rows="2"></textarea>
+                    <button class="btn-primary" id="sendBtn" onclick="sendMessage()" style="padding: 0.75rem 1.5rem;">Envoyer</button>
                 </div>
             </div>
         </section>
     </main>
 
     <footer>
-        <div class="footer-content">
-            <p style="font-size: 1.1rem; margin-bottom: 1rem;"><strong>FrancoPro</strong> - Plateforme d'apprentissage de la grammaire française</p>
-            <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">Université de Mostaganem - Faculté des Langues Étrangères</p>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">Année universitaire: 2024-2025</p>
-            <div style="padding-top: 2rem; border-top: 2px solid var(--border); color: var(--text-secondary);">
-                <p>&copy; 2025 FrancoPro | Projet de Recherche Académique</p>
-                <p style="margin-top: 0.5rem; font-size: 0.95rem;">Développé par <strong>BETTAHAR Abdelkrim</strong> - Master Sciences du Langage</p>
-            </div>
+        <p style="font-size: 1rem; margin-bottom: 0.5rem;"><strong>FrancoPro</strong></p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Université de Mostaganem</p>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Année 2024-2025</p>
+        <div style="padding-top: 1rem; border-top: 2px solid var(--border); color: var(--text-secondary);">
+            <p style="font-size: 0.85rem;">&copy; 2025 FrancoPro</p>
+            <p style="font-size: 0.85rem; margin-top: 0.3rem;">Développé par <strong>BETTAHAR Abdelkrim</strong></p>
         </div>
     </footer>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        themeToggle.onclick = () => {
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const toggle = document.getElementById('themeToggle');
+            
             if (body.getAttribute('data-theme') === 'dark') {
                 body.removeAttribute('data-theme');
-                themeToggle.textContent = '🌙';
+                toggle.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
             } else {
                 body.setAttribute('data-theme', 'dark');
-                themeToggle.textContent = '☀️';
+                toggle.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
             }
-        };
+        }
 
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+
+        // Chat functionality
         const chatInput = document.getElementById('chatInput');
-        const sendBtn = document.getElementById('sendBtn');
         const chatMessages = document.getElementById('chatMessages');
         const loading = document.getElementById('loading');
 
@@ -181,9 +319,10 @@
             const userMessage = chatInput.value.trim();
             if (!userMessage) return;
 
+            // Add user message
             const userMsg = document.createElement('div');
             userMsg.className = 'message user';
-            userMsg.innerHTML = `<strong>Vous</strong><p>${userMessage}</p>`;
+            userMsg.innerHTML = `<strong>Vous</strong><p>${escapeHtml(userMessage)}</p>`;
             chatMessages.appendChild(userMsg);
             chatInput.value = '';
 
@@ -197,14 +336,19 @@
                     body: JSON.stringify({ message: userMessage })
                 });
 
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
                 const data = await response.json();
                 loading.classList.remove('active');
 
+                // Add assistant message
                 const assistantMsg = document.createElement('div');
                 assistantMsg.className = 'message assistant';
                 const formatted = data.response.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
                 assistantMsg.innerHTML = `
-                    <strong>🎓 Assistant Pédagogique</strong>
+                    <strong>🎓 Assistant</strong>
                     <div><p>${formatted}</p></div>
                     <div class="message-actions">
                         <button class="action-btn" onclick="copyText(this)">📋 Copier</button>
@@ -215,47 +359,57 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             } catch (error) {
                 loading.classList.remove('active');
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'message assistant';
+                errorMsg.innerHTML = `<strong>❌ Erreur</strong><p>Impossible de se connecter. Vérifiez votre connexion.</p>`;
+                chatMessages.appendChild(errorMsg);
             }
         }
 
-        function copyText(btn) {
-            const content = btn.closest('.message').querySelector('div').innerText;
-            navigator.clipboard.writeText(content).then(() => {
-                showToast('✅ Copié');
-                btn.innerHTML = '✅ Copié';
-                setTimeout(() => btn.innerHTML = '📋 Copier', 2000);
-            });
-        }
-
-        async function downloadPDF(btn) {
-            const content = btn.closest('.message').querySelector('div').innerText;
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(16);
-            doc.text('FrancoPro - Leçon', 20, 20);
-            doc.setFontSize(10);
-            doc.text('BETTAHAR Abdelkrim - Université de Mostaganem', 20, 28);
-            doc.setFontSize(12);
-            const lines = doc.splitTextToSize(content, 170);
-            doc.text(lines, 20, 40);
-            doc.save(`FrancoPro-${Date.now()}.pdf`);
-            showToast('✅ PDF exporté');
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('active');
-            setTimeout(() => toast.classList.remove('active'), 3000);
-        }
-
-        sendBtn.onclick = sendMessage;
+        // Enter key support
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
         });
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyText(btn) {
+            const content = btn.closest('.message').querySelector('div').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('✅ Copié');
+                btn.innerHTML = '✅';
+                setTimeout(() => btn.innerHTML = '📋 Copier', 2000);
+            });
+        }
+
+        function downloadPDF(btn) {
+            const content = btn.closest('.message').querySelector('div').innerText;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(14);
+            doc.text('FrancoPro - Leçon', 20, 20);
+            doc.setFontSize(10);
+            doc.text('BETTAHAR Abdelkrim', 20, 28);
+            doc.setFontSize(11);
+            const lines = doc.splitTextToSize(content, 170);
+            doc.text(lines, 20, 38);
+            doc.save(`Lecon-${Date.now()}.pdf`);
+            showToast('✅ PDF téléchargé');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 2500);
+        }
     </script>
 </body>
 </html>
