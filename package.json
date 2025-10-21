@@ -1,0 +1,21 @@
+{
+  "name": "francopro",
+  "version": "1.0.0",
+  "description": "Plateforme interactive pour maîtriser la grammaire française",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build"
+  },
+  "keywords": [
+    "french",
+    "grammar",
+    "learning",
+    "education"
+  ],
+  "author": "BETTAHAR Abdelkrim",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
